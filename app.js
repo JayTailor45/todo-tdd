@@ -1,17 +1,22 @@
+// import start
 const express = require("express");
+
+const todoRoutes = require("./routes/todo.routes");
+// import end
 
 const app = express();
 
-const PORT = 3000;
+// middlewares
+app.use(express.json());
 
+// routes
+app.use("/todos", todoRoutes);
+
+// direct req
 app.get("/", (req, res) => {
   return res.json({
     hello: "World",
   });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is up and listening on port ${PORT}`);
 });
 
 module.exports = app;
