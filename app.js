@@ -2,7 +2,10 @@
 const express = require("express");
 
 const todoRoutes = require("./routes/todo.routes");
+const mongodb = require("./mongodb/mongodb.connect");
 // import end
+
+mongodb.connect();
 
 const app = express();
 
