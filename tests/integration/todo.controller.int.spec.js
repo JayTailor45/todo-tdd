@@ -60,4 +60,17 @@ describe(endpointUrl, () => {
     expect(response.body.title).toBe(testData.title);
     expect(response.body.done).toBe(testData.done);
   });
+
+  it("DELETE by id " + endpointUrl + ":/todoId", async () => {
+    const response = await request(app)
+      .delete(endpointUrl + newTodoId);
+    expect(response.statusCode).toBe(204);
+  });
+
+  it("DELETE by id - item does not exist", async () => {
+    const response = await request(app)
+      .delete(endpointUrl + "6ad6d619b444328cb819d345")
+      .send();
+    expect(response.statusCode).toBe(404);
+  });
 });
