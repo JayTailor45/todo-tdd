@@ -89,4 +89,11 @@ describe("TodoController.getTodoById", () => {
     expect(res._getJSONData()).toStrictEqual(newTodo);
     expect(res._isEndCalled()).toBeTruthy();
   });
+  it('should handle errors in getTodoById', async () => {
+    const errorMessage = { message: "Internal Server Error" };
+    const rejectedPromise = Promise.reject(errorMessage)
+    TodoModel.findById.mockReturnValue(rejectedPromise);
+    await TodoController.getTodoById(req, res, next);
+    expect(next).toHaveBeenCalledWith(errorMessage)
+  });
 });
