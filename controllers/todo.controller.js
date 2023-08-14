@@ -40,7 +40,7 @@ exports.updateTodo = async (req, res, next) => {
         userFindAndModify: false,
       }
     );
-    if(!updatedTodo) {
+    if (!updatedTodo) {
       return res.status(404).send();
     }
     res.status(200).json(updatedTodo);
