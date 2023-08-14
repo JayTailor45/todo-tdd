@@ -8,6 +8,7 @@ const allTodos = require("../mock-data/all-todos.json");
 
 TodoModel.create = jest.fn();
 TodoModel.find = jest.fn();
+TodoModel.findById = jest.fn();
 
 let req, res, next;
 
@@ -69,5 +70,23 @@ describe("TodoController.getTodos", () => {
     TodoModel.find.mockReturnValue(rejectedPromise);
     await TodoController.getTodos(req, res, next);
     expect(next).toHaveBeenCalledWith(errorMessage);
+  });
+});
+
+describe("TodoController.getTodoById", () => {
+  it("should have getTodoById function", () => {
+    expect(typeof TodoController.getTodoById).toBe("function");
+  });
+  it("should call findById function with route params", async () => {
+    req.params.todoId = "64d9d614f6e71d420db3e68f";
+    await TodoController.getTodoById(req, res, next);
+    expect(TodoModel.findById).toBeCalledWith("64d9d614f6e71d420db3e68f");
+  });
+  it("should return json body and 200 response code", async () => {
+    TodoModel.findById.mockReturnValue(newTodo);
+    await TodoController.getTodoById(req, res, next);
+    expect(res.statusCode).toBe(200);
+    expect(res._getJSONData()).toStrictEqual(newTodo);
+    expect(res._isEndCalled()).toBeTruthy();
   });
 });
