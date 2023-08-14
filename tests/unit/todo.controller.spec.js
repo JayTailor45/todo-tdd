@@ -133,11 +133,17 @@ describe("TodoController.updateTodo", () => {
     expect(res.statusCode).toBe(200);
     expect(res._getJSONData()).toStrictEqual(newTodo);
   });
-  it('should handle errors in updateTodo function', async () => {
+  it("should handle errors in updateTodo function", async () => {
     const errorMessage = { message: "Internal Server Error" };
     const rejectedPromise = Promise.reject(errorMessage);
     TodoModel.findByIdAndUpdate.mockReturnValue(rejectedPromise);
     await TodoController.updateTodo(req, res, next);
     expect(next).toHaveBeenCalledWith(errorMessage);
+  });
+  it("should handle 404 error in updateTodo function", async () => {
+    TodoModel.findByIdAndUpdate.mockReturnValue(null);
+    await TodoController.updateTodo(req, res, next);
+    expect(res.statusCode).toBe(404);
+    expect(res._isEndCalled()).toBeTruthy();
   });
 });
