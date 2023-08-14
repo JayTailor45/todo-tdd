@@ -10,6 +10,7 @@ TodoModel.create = jest.fn();
 TodoModel.find = jest.fn();
 TodoModel.findById = jest.fn();
 TodoModel.findByIdAndUpdate = jest.fn();
+TodoModel.findByIdAndDelete = jest.fn();
 
 let req, res, next;
 const todoId = "64d9d530fba49a2f08b80abc";
@@ -143,6 +144,36 @@ describe("TodoController.updateTodo", () => {
   it("should handle 404 error in updateTodo function", async () => {
     TodoModel.findByIdAndUpdate.mockReturnValue(null);
     await TodoController.updateTodo(req, res, next);
+    expect(res.statusCode).toBe(404);
+    expect(res._isEndCalled()).toBeTruthy();
+  });
+});
+
+describe("TodoController.deleteTodo", () => {
+  it("should have deleteTodo function", () => {
+    expect(typeof TodoController.deleteTodo).toBe("function");
+  });
+  it("should call to findByIdAndDelete function", async () => {
+    req.params.todoId = todoId;
+    TodoModel.findByIdAndDelete.mockReturnValue(newTodo);
+    await TodoController.deleteTodo(req, res, next);
+    expect(TodoModel.findByIdAndDelete).toBeCalledWith(req.params.todoId);
+  });
+  it("should return 204 response code", async () => {
+    TodoModel.findByIdAndDelete.mockReturnValue(newTodo);
+    await TodoController.deleteTodo(req, res, next);
+    expect(res.statusCode).toBe(204);
+  });
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Internal Server Error" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    TodoModel.findByIdAndDelete.mockReturnValue(rejectedPromise);
+    await TodoController.deleteTodo(req, res, next);
+    expect(next).toHaveBeenCalledWith(errorMessage);
+  });
+  it("should handle 404 error", async () => {
+    TodoModel.findByIdAndDelete.mockReturnValue(null);
+    await TodoController.deleteTodo(req, res, next);
     expect(res.statusCode).toBe(404);
     expect(res._isEndCalled()).toBeTruthy();
   });
