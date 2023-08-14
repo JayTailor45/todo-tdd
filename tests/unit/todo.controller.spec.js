@@ -44,7 +44,6 @@ describe("TodoController.createTodo", () => {
     TodoModel.create.mockReturnValue(rejectedPromise);
     await TodoController.createTodo(req, res, next);
     expect(next).toBeCalledWith(errorMessage);
-    
   });
 
 });
